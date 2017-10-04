@@ -7,17 +7,12 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    private final LatLng Work = new LatLng(32.166453, 34.809263);
-    private final LatLng Liv = new LatLng(32.162442, 34.809341);
-    private final LatLng Mcdonalds = new LatLng(32.161263, 34.810630);
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,35 +24,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
     }
 
+
+    /**
+     * Manipulates the map once available.
+     * This callback is triggered when the map is ready to be used.
+     * This is where we can add markers or lines, add listeners or move the camera. In this case,
+     * we just add a marker near Sydney, Australia.
+     * If Google Play services is not installed on the device, the user will be prompted to install
+     * it inside the SupportMapFragment. This method will only be triggered once the user has
+     * installed Google Play services and returned to the app.
+     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        SetMapCustomMarkers();
-        mMap.setMapType(R.raw.map_style_json);
-
-        mMap.setMinZoomPreference(15);
-        mMap.setMaxZoomPreference(20);
 
         // Add a marker in Sydney and move the camera
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(Work));
+        LatLng sydney = new LatLng(-34, 151);
+        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
-
-    private void SetMapCustomMarkers()
-    {
-        mMap.addMarker(new MarkerOptions()
-                .position(Work)
-                .title("CmTrading")
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.cmtrading)));
-
-        mMap.addMarker(new MarkerOptions()
-                .position(Liv)
-                .title("Liv")
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.liv)));
-
-        mMap.addMarker(new MarkerOptions()
-                .position(Mcdonalds)
-                .title("Mcdonalds")
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.mcdonalds)));
-    }
-
 }

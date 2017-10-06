@@ -13,7 +13,7 @@ namespace Q.WebAPI.Controllers {
         [HttpGet]
         public async Task <ContentResult> Get (string lastReportHash){
             {
-                if (lastReportHash == StaticData.LastReportHash.ToString())
+                if (lastReportHash != StaticData.LastReportHash.ToString())
                     return Content(JsonConvert.SerializeObject(StaticData.Reports.Where(report => report.DateTime.AddMinutes(10) > DateTime.Now)), "application/json");
                 return Content(string.Empty);
             }

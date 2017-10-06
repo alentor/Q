@@ -1,5 +1,6 @@
 <application>
   <component name="DebuggerSettings">
+    <option name="TRACING_FILTERS_ENABLED" value="false" />
     <option name="RUN_HOTSWAP_AFTER_COMPILE" value="RunHotswapAlways" />
     <filter>
       <option name="PATTERN" value="com.sun.*" />
@@ -71,8 +72,14 @@
           <option name="VALUES_FILTER_ENABLED" value="false" />
         </configuration>
       </debugger>
+      <debugger id="groovy_debugger">
+        <configuration>
+          <option name="DEBUG_DISABLE_SPECIFIC_GROOVY_METHODS" value="false" />
+        </configuration>
+      </debugger>
       <debugger id="kotlin_debugger">
         <configuration>
+          <option name="DEBUG_DISABLE_KOTLIN_INTERNAL_CLASSES" value="false" />
           <option name="DEBUG_IS_FILTER_FOR_STDLIB_ALREADY_ADDED" value="true" />
         </configuration>
       </debugger>

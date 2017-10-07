@@ -13,7 +13,7 @@ namespace Q.WebAPI.Controllers {
             report.DateTime = DateTime.Now;
             StaticData.Reports.Add(report);
             StaticData.LastReportHash = Guid.NewGuid();
-            return StaticData.LastReportHash.ToString();
+            return "Report Recived";
         }
     }
 }

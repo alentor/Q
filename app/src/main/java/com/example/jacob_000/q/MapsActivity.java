@@ -1,9 +1,5 @@
 package com.example.jacob_000.q;
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
@@ -18,11 +14,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.URL;
-import java.net.URLConnection;
+import java.util.Iterator;
+import java.util.List;
+
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -30,68 +24,139 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private final LatLng Work = new LatLng(32.166453, 34.809263);
     private final LatLng Liv = new LatLng(32.162442, 34.809341);
     private final LatLng Mcdonalds = new LatLng(32.161263, 34.810630);
-    private Marker LivMarker;
-    private Marker McdonaldsMarker;
+    private static Marker LivMarker;
+    private static Marker McdonaldsMarker;
     private Marker WorkMarker;
     private Button report;
+    private Button x5;
     private Button x10;
+    private Button x15;
     private Button x20;
-    private Button x30;
-    private Button x40;
     private View buttonsPanel;
-    private static int totalPplNumLiv;
-    private static int totalPplNumMcdonalds;
+    public static double CurrentLatitude;
+    public static double CurrentLongitude;
+    public static String LastReportCode;
+    public static Marker[] Markers;
+    public static Marker reportMarker;
 
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        try
+        {
+            BackgroundWorker.reader.close();
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        try
+        {
+            BackgroundWorker.reader.close();
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+    }
+
+    private static Marker GetNearPOI()
+    {
+        Marker marker;
+
+        double mcdonaldsLatDistance = Markers[0].getPosition().latitude - CurrentLatitude;
+        double mcdonaldsLngDistance = Markers[0].getPosition().longitude - CurrentLongitude;
+
+        double livLatDistance = Markers[1].getPosition().latitude - CurrentLatitude;
+        double livLngDistance = Markers[1].getPosition().longitude - CurrentLongitude;
+
+        if (mcdonaldsLatDistance > livLatDistance && mcdonaldsLngDistance > livLngDistance)
+        {
+            marker = LivMarker;
+        }
+        else
+        {
+            marker = McdonaldsMarker;
+        }
+
+        return marker;
+    }
+
+
+    public static void UpdateReports(List<Report> reports)
+    {
+        for (Iterator<Report> i = reports.iterator(); i.hasNext();)
+        {
+                Report report = i.next();
+                reportMarker = GetNearPOI();
+                reportMarker.setTitle("+" + report.Queue + "웃");
+                int estTime = report.Queue * 2;
+                reportMarker.setSnippet("Est. " + estTime + "min");
+        }
+        McdonaldsMarker.showInfoWindow();
+        LivMarker.showInfoWindow();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-
+        x5 = findViewById(R.id.x5);
         x10 = findViewById(R.id.x10);
+        x15 = findViewById(R.id.x15);
         x20 = findViewById(R.id.x20);
-        x30 = findViewById(R.id.x30);
-        x40 = findViewById(R.id.x40);
 
 
+        x5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                buttonsPanel.setVisibility(View.INVISIBLE);
+                report.setVisibility(View.VISIBLE);
+
+                Thread thread1 = new SendReport(5);
+                thread1.start();
+
+            }
+        });
 
         x10.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                LivMarker.setTitle((totalPplNumLiv += 10) + "웃");
-                LivMarker.showInfoWindow();
                 buttonsPanel.setVisibility(View.INVISIBLE);
                 report.setVisibility(View.VISIBLE);
+
+                Thread thread1 = new SendReport(10);
+                thread1.start();
+            }
+        });
+
+        x15.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                buttonsPanel.setVisibility(View.INVISIBLE);
+                report.setVisibility(View.VISIBLE);
+
+                Thread thread1 = new SendReport(15);
+                thread1.start();
             }
         });
 
         x20.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                LivMarker.setTitle((totalPplNumLiv += 20) + "웃");
-                LivMarker.showInfoWindow();
                 buttonsPanel.setVisibility(View.INVISIBLE);
                 report.setVisibility(View.VISIBLE);
-            }
-        });
 
-        x30.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                LivMarker.setTitle((totalPplNumLiv += 30) + "웃");
-                LivMarker.showInfoWindow();
-                buttonsPanel.setVisibility(View.INVISIBLE);
-                report.setVisibility(View.VISIBLE);
-            }
-        });
-
-        x40.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                LivMarker.setTitle((totalPplNumLiv += 40) + "웃");
-                LivMarker.showInfoWindow();
-                buttonsPanel.setVisibility(View.INVISIBLE);
-                report.setVisibility(View.VISIBLE);
+                Thread thread1 = new SendReport(20);
+                thread1.start();
             }
         });
 
@@ -101,65 +166,44 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onClick(View view) {
 
                 report.setVisibility(View.INVISIBLE);
-
                 buttonsPanel = findViewById(R.id.buttonsLayout);
                 buttonsPanel.setVisibility(View.VISIBLE);
 
-            }});
+            }
+        });
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-    }
-
-    private void SendReport()
-    {
-        BufferedReader reader = null;
-
-        // Send data
-        try {
-
-            // Defined URL  where to send data
-            URL url = new URL("/media/webservice/httppost.php");
-
-            // Send POST data request
-
-            URLConnection conn = url.openConnection();
-            conn.setDoOutput(true);
-            OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-            wr.write("");
-            wr.flush();
-
-            // Get the server response
-
-            reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            StringBuilder sb = new StringBuilder();
-            String line = null;
-
-            // Read Server Response
-            while ((line = reader.readLine()) != null) {
-                // Append server response in string
-                sb.append(line + "\n");
-            }
 
 
-        } catch (Exception ex) {
+        // check if GPS enabled
+        GPSTracker gpsTracker = new GPSTracker(this);
 
-        } finally {
-            try {
-
-                reader.close();
-            } catch (Exception ex) {
-            }
+        if (gpsTracker.getIsGPSTrackingEnabled())
+        {
+            CurrentLatitude = gpsTracker.latitude;
+            CurrentLongitude = gpsTracker.longitude;
         }
-    }
+        else
+        {
+            // can't get location
+            // GPS or Network is not enabled
+            // Ask user to enable GPS/network in settings
+            gpsTracker.showSettingsAlert();
+        }
 
+        Thread thread2 = new BackgroundWorker(this);
+        thread2.start();
+
+    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         SetMapCustomMarkers();
+        Markers = new Marker[]{McdonaldsMarker, LivMarker};
         mMap.setMapType(R.raw.map_style_json);
 
         mMap.setMinZoomPreference(15);
@@ -184,7 +228,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         McdonaldsMarker = mMap.addMarker(new MarkerOptions()
                          .position(Mcdonalds)
-                         .title("Mcdonalds")
                          .icon(BitmapDescriptorFactory.fromResource(R.drawable.mcdonalds)));
     }
 

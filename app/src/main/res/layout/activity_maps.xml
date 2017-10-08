@@ -33,42 +33,42 @@
 
 
         <Button
-            android:id="@+id/x40"
+            android:id="@+id/x20"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/x20"
-            android:layout_alignBottom="@+id/x20"
+            android:layout_alignBaseline="@+id/x10"
+            android:layout_alignBottom="@+id/x10"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:text="40웃" />
+            android:text="20웃" />
+
+        <Button
+            android:id="@+id/x5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/x15"
+            android:layout_alignBottom="@+id/x15"
+            android:layout_toLeftOf="@+id/x20"
+            android:layout_toStartOf="@+id/x20"
+            android:text="5웃" />
 
         <Button
             android:id="@+id/x10"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/x30"
-            android:layout_alignBottom="@+id/x30"
-            android:layout_toLeftOf="@+id/x40"
-            android:layout_toStartOf="@+id/x40"
+            android:layout_alignLeft="@+id/x5"
+            android:layout_alignParentBottom="true"
+            android:layout_alignStart="@+id/x5"
             android:text="10웃" />
 
         <Button
-            android:id="@+id/x20"
+            android:id="@+id/x15"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/x10"
-            android:layout_alignParentBottom="true"
-            android:layout_alignStart="@+id/x10"
-            android:text="20웃" />
-
-        <Button
-            android:id="@+id/x30"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/x40"
-            android:layout_alignLeft="@+id/x40"
-            android:layout_alignStart="@+id/x40"
-            android:text="30웃" />
+            android:layout_above="@+id/x20"
+            android:layout_alignLeft="@+id/x20"
+            android:layout_alignStart="@+id/x20"
+            android:text="15웃" />
 
     </RelativeLayout>
 

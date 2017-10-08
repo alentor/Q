@@ -36,7 +36,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public static double CurrentLatitude;
     public static double CurrentLongitude;
     public static String LastReportCode;
-    public static Marker[] Markers;
     public static Marker reportMarker;
 
 
@@ -71,22 +70,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     {
         Marker marker;
 
-        double mcdonaldsLatDistance = Markers[0].getPosition().latitude - CurrentLatitude;
-        double mcdonaldsLngDistance = Markers[0].getPosition().longitude - CurrentLongitude;
+        double livDistance = CalculateDistance.distance(LivMarker.getPosition().latitude, LivMarker.getPosition().longitude, CurrentLatitude, CurrentLongitude);
+        double mcdonaldsDistance = CalculateDistance.distance(McdonaldsMarker.getPosition().latitude, McdonaldsMarker.getPosition().longitude, CurrentLatitude, CurrentLongitude);
 
-        double livLatDistance = Markers[1].getPosition().latitude - CurrentLatitude;
-        double livLngDistance = Markers[1].getPosition().longitude - CurrentLongitude;
-
-        if (mcdonaldsLatDistance > livLatDistance && mcdonaldsLngDistance > livLngDistance)
-        {
+        if (mcdonaldsDistance > livDistance)
             marker = LivMarker;
-        }
         else
-        {
             marker = McdonaldsMarker;
-        }
 
         return marker;
+
     }
 
 
@@ -203,14 +196,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         SetMapCustomMarkers();
-        Markers = new Marker[]{McdonaldsMarker, LivMarker};
         mMap.setMapType(R.raw.map_style_json);
 
         mMap.setMinZoomPreference(15);
         mMap.setMaxZoomPreference(20);
 
         // Add a marker in Sydney and move the camera
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(Work));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(CurrentLatitude, CurrentLongitude)));
     }
 
 
